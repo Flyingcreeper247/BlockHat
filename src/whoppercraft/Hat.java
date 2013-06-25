@@ -1,8 +1,11 @@
 package whoppercraft;
 
 
+import javax.naming.Binding;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.org.ibex.nestedvm.util.Platform;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.getspout.spout.Spout;
+import org.getspout.spoutapi.keyboard.Keyboard;
 
 public class Hat implements Listener {
 	private static Main pl;
@@ -29,6 +34,12 @@ public class Hat implements Listener {
         public void onPlayerInteract(PlayerInteractEvent event) {
                 Player player = event.getPlayer();
                 Action action = event.getAction();
+                if (Spout.getPlatform() == Platform.CLIENT)
+                {
+                    Client c = (Client) Spout.getEngine();
+                    InputManager in = c.getInputManager();
+                    in.bind (new Binding ("my command", Keyboard.KEY_F5));
+                }
                 if (action == Action.LEFT_CLICK_AIR) {
                         setHat(player);
 
@@ -50,11 +61,11 @@ public class Hat implements Listener {
                 PlayerInventory inv = player.getInventory();
                 inv.setHelmet(item);
                 player.sendMessage(ChatColor.AQUA + "Enjoy your hat!");
-                }
+        }
 		
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
-        	setHat(event.getPlayer(), new ItemStack(pl.getConfig().getInt("startID")));
+                        setHat(event.getPlayer(), new ItemStack(pl.getConfig().getInt("startID")));
                 }
         @EventHandler
         public void getHelmet(EntityDamageEvent event){
